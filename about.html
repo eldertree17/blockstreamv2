@@ -262,33 +262,15 @@
       background: #019b3b;
     }
   </style>
-      <script type="module">
-        import { TonConnect } from 'https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js';
-
-        const tonConnect = new TonConnect({
-            manifestUrl: 'https://eldertree17.github.io/blockstreamv2/tonconnect-manifest.json'
-        });
-
-        async function connectWallet() {
-          try {
-                const wallet = await tonConnect.connect();
-                console.log('Wallet connected:', wallet);
-                alert('Wallet connected: ' + JSON.stringify(wallet));
-                // Update UI or perform actions after successful connection
-            } catch (error) {
-                console.error('Failed to connect wallet:', error);
-                alert('Failed to connect wallet: ' + error.message);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('connect-button').addEventListener('click', connectWallet);
-        });
-    </script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+      <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 </head>
 <body>
   <header>
     <h1>My accounts</h1>
+    <!-- Connect Wallet Button-->
+    <div id="ton-connect"></div>
+    <button id="connectWalletBtn" class="connect">Connect Wallet</button>
+    <button id="sendTransactionBtn" class="transact">Send Transaction</button>
   </header>
 
   <div class="container">
@@ -298,13 +280,11 @@
     </div>
 
   <div class="container">
-    <!-- Wallet Section -->
+    <!-- Wallet Connect Section -->
     <div class="wallet-section">
       <h2>Connect wallet</h2>
         <p>Connect your wallet to access premium features</p>
-        <div id="ton-connect"></div>
-        <button id="connectWalletBtn" class="connect">Connect Wallet</button>
-        <button id="sendTransactionBtn" class="transact">Send Transaction</button>        
+        <div id="ton-connect"></div>        
       </div>
 
     <!-- Membership & Billing Section -->
@@ -351,91 +331,15 @@
     </footer>
     </div>
 
-
-  <script>
-    // Handle Wallet Connection
-    document.getElementById('connectWalletBtn').addEventListener('click', () => {
-      alert('Wallet connected successfully!');
-    });
-
-    // Handle Fiat Payment
-    document.getElementById('payWithFiat').addEventListener('click', () => {
-      alert('Redirecting to Fiat payment gateway...');
-    });
-
-    // Handle Crypto Payment
-    document.getElementById('payWithCrypto').addEventListener('click', () => {
-      alert('Redirecting to Crypto payment gateway...');
-    });
-
-    // Handle Telegram Stars Payment
-    document.getElementById('payWithTelegramStars').addEventListener('click', () => {
-      alert('Redirecting to Telegram Stars payment gateway...');
-    });
-
-    // Claim Rewards
-    document.getElementById('claimRewardsBtn').addEventListener('click', () => {
-      alert('Rewards claimed successfully!');
-    });
-  </script>
-  <script>
-    let isWalletConnect = false;
-    let tonConnectUI = null;
-    // Initialize TonConnect UI
-    document.addEventListener('DOMContentLoaded', async function() {
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-              manifestUrl: 'https://eldertree17.github.io/blockstream/about.html/tonconnect-manifest.json',
-              buttonRootId: 'ton-connect'
+<script>
+  //Initialize TON Connect UI
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://https://eldertree17.github.io/blockstreamv2/about.html/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect'
   });
-    //Check if wallet is already connected
-    const connectedWallet = await tonConnectUI.getWallet();
-    if(connectedWallet){
-  isWalletConnect = true;
-  console.log("Wallet already connected: ", connectedWallet);
-}
-    });
+</script>
 
-//Connect Wallet
-  async function connectWallet() {
-    if (isWalletConnect) {
-      console.log("Wallet already connected");
-    }
-    try {
-      const connectedWallet = await tonConnectUI.connectWallet();
-      if (connectedWallet) {
-        isWalletConnect = true;
-        console.log("Wallet connected: ", connectedWallet);
-      } 
-    } catch (error) {
-      console.error("Wallet connection failed:", error);
-    }
-  }
-
-
-//Send Transaction
-    async function sendTonTransaction() {
-      if (!isWalletConnect) {
-        console.error("Connect wallet first");
-        return;
-      }
-
-      const transaction = {
-    messages: [
-        {
-            address: "UZWalletaddres1230", // destination address
-            amount: "20000000" //Toncoin in nanotons (0.02 TON)
-        }
-      ]
-    }; 
-
-    try {
-        const result = await tonConnectUI.sendTransaction(transaction);
-        console.log("Transaction sent: ", result);
-        } catch (error) {
-        console.error("Transaction failed: ", error);
-        }
-    }
-
+<script>
   //Button event listeners
   document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
   document.getElementById("sendTransactionBtn").addEventListener("click", sendTonTransaction);
