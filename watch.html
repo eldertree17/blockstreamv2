@@ -155,47 +155,51 @@
               <p>Director: Someone</p>
           </div>
           <button class="play-button" onclick="videoPlayer.play()";>Play</button> <!-- Play button -->
+
+
+          Copy
           <button class="share-button" onclick="shareToTelegram()">Share</button> <!-- Share button -->
-
+          
           <script>
-          // Ensure the Telegram Web App API is available
-            function shareToTelegram() {
-              const videoSrc = getQueryParam('video'); // Function to get the video query parameter
-              if (videoSrc) {
-                const videoPageUrl = `${window.location.origin}${window.location.pathname}?video=${encodeURIComponent(videoSrc)}`;
-                const messageText = `Check out this video: ${videoPageUrl}`;
-
-                // Check if the Telegram Web App interface is available
-                if (window.Telegram && Telegram.WebApp) {
-                    Telegram.WebApp.showPopup({
-                        title: "Share Video",
-                        message: "Do you want to share this video?",
-                        buttons: [
-                            { id: "share", type: "ok", text: "Share" },
-                            { id: "cancel", type: "close", text: "Cancel" }
-                        ]
-                    });
-
-                    // Handle the user's response to the popup
-                    Telegram.WebApp.onEvent("popupClosed", function (popupResult) {
-                        if (popupResult.button_id === "share") {
-                            // Use the utils.openTelegramLink to send the message
-                            utils.openTelegramLink(`https://t.me/block_stream_bot?url=${encodeURIComponent(videoPageUrl)}&text=${encodeURIComponent(messageText)}`);
-                        }
-                    });
-                } else {
-                    alert("Telegram Web App is not available. Please try again through the Telegram app.");
-                }
-            } else {
-                alert('No video selected to share.');
-            }
-        }
-
-        // Helper function to get query parameters
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
+              function shareToTelegram() {
+                  const videoSrc = getQueryParam('video'); // Function to get the video query parameter
+                  if (videoSrc) {
+                      // Construct the @block_stream_bot watch page URL
+                      const botWatchPageUrl = `https://t.me/block_stream_bot?start=watch_${encodeURIComponent(videoSrc)}`;
+                      const messageText = `Check out this video on @block_stream_bot: ${botWatchPageUrl}`;
+          
+                      // Check if the Telegram Web App interface is available
+                      if (window.Telegram && Telegram.WebApp) {
+                          Telegram.WebApp.showPopup({
+                              title: "Share Video",
+                              message: "Do you want to share this video on @block_stream_bot?",
+                              buttons: [
+                                  { id: "share", type: "ok", text: "Share" },
+                                  { id: "cancel", type: "close", text: "Cancel" }
+                              ]
+                          });
+          
+                          // Handle the user's response to the popup
+                          Telegram.WebApp.onEvent("popupClosed", function (popupResult) {
+                              if (popupResult.button_id === "share") {
+                                  // Use the Telegram Web Apps API to send the message
+                                  Telegram.WebApp.sendData(messageText);
+                              }
+                          });
+                      } else {
+                          // Fallback for unsupported environments
+                          alert("Telegram Web App is not available. Please try again through the Telegram app.");
+                      }
+                  } else {
+                      alert('No video selected to share.');
+                  }
+              }
+          
+              // Helper function to get query parameters
+              function getQueryParam(param) {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  return urlParams.get(param);
+              }
     </script>
       </div> <!-- End of category -->
       <div class="content">
