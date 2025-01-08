@@ -155,18 +155,24 @@
               <p>Director: Someone</p>
           </div>
           <button class="play-button" onclick="videoPlayer.play()";>Play</button> <!-- Play button -->
-
-
-          Copy
           <button class="share-button" onclick="shareToTelegram()">Share</button> <!-- Share button -->
           
           <script>
+            // Function to share the video via Telegram
             function shareToTelegram() {
-                const videoSrc = getQueryParam('video');
+                const videoSrc = getQueryParam('video'); // Get the video parameter from the query string
                 if (videoSrc) {
+                    // Generate the redirect URL for sharing
                     const redirectUrl = `${window.location.origin}/@block_stream_bot/watch.html?video=${encodeURIComponent(videoSrc)}`;
                     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(redirectUrl)}&text=${encodeURIComponent('Check out this video: ' + videoSrc)}`;
-                    window.open(telegramUrl, '_blank');
+        
+                    // If running within Telegram Web App context, handle appropriately
+                    if (window.Telegram && Telegram.WebApp) {
+                        Telegram.WebApp.openLink(telegramUrl); // Opens the link in Telegram
+                    } else {
+                        // Fallback for standard browsers
+                        window.open(telegramUrl, '_blank');
+                    }
                 } else {
                     alert('No video selected to share.');
                 }
