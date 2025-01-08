@@ -23,6 +23,21 @@
             transition: background-color 0.3s;
             border-radius: 5px; /* Optional: rounds corners */
         }
+        .connect {
+            background: #0177ff;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 128, 0, 0.4);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .connect:hover {
+            background: #45a049;
+            box-shadow: 0 6px 8px rgba(0, 128, 0, 0.4);
+        }
         header {
             display: flex;
             align-items: center; /* Center items vertically */
@@ -43,6 +58,7 @@
         .search-icon {
             font-size: 24px; /* Size of the search icon */
             cursor: pointer; /* Pointer cursor on hover */
+            margin: 10px; /* Margin around the icon */
         }
         nav {
             display: flex;
@@ -108,12 +124,15 @@
 
         .row {
             display: contents; /* Allows columns to stack correctly */
-        }     
+        } 
     </style>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 </head>
 <header>
-    <h1>Blockstream</h1>
     <span class="search-icon" onclick="navigateToSearch()">🔍</span> <!-- Search icon -->
+      <div class="wallet-section">
+        <div id="ton-connect"></div>
+      </div>
 </header>
 <body>
     <div class="content" id="content">
@@ -342,21 +361,19 @@
                     </div>
                 </div>
             </div>
-            
     <footer>
         <nav>
            <a href="index.html" onclick ="showPage('home')">Home</a> 
            <a href="tasks.html" onclick ="showPage('tasks')">Tasks</a> <!-- Link to tasks.html -->
            <a href="leaderboard.html" onclick ="showPage('leaderboard')">Leaderboard</a> 
-           <a href="about.html" onclick="showPage('about')">About</a> 
-       </nav> 
+           <a href="account.html" onclick="showPage('account')">Account</a> 
+        </nav> 
    </footer>
 
    <script>
        function navigateToSearch() { 
            window.location.href = "search.html"; // Redirects to search.html 
        }
-
        function showLeaderboardTab(tab) {
            const contents = document.querySelectorAll('.leaderboard-content');
            contents.forEach(content => {
@@ -373,7 +390,6 @@
                activeTab.classList.add('active'); // Set active class on selected tab
            }
        }
-
        function showPage(page) {
            const pages = document.querySelectorAll('.page');
            pages.forEach(p => {
@@ -381,7 +397,42 @@
            });
            document.getElementById(page).classList.add('active'); // Show selected page
        }
+          // Initialize TON Connect UI
+          const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://eldertree17.github.io/blockstreamv2/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect'
+      });
+  
+      // Function to connect wallet
+      async function connectWallet() {
+        try {
+          const wallet = await tonConnectUI.connect();
+          console.log('Wallet connected:', wallet);
+          alert('Wallet connected: ' + JSON.stringify(wallet));
+          // Update UI or perform actions after successful connection
+        } catch (error) {
+          console.error('Failed to connect wallet:', error);
+          alert('Failed to connect wallet: ' + error.message);
+        }
+      }
+      // Function to send TON transaction
+      async function sendTonTransaction() {
+        try {
+          const transaction = await tonConnectUI.sendTransaction({
+            to: 'YOUR_TON_WALLET_ADDRESS',
+            value: '1', // Amount in TON
+            data: 'Hello, TON!'
+          });
+          console.log('Transaction sent:', transaction);
+          alert('Transaction sent: ' + JSON.stringify(transaction));
+        } catch (error) {
+          console.error('Failed to send transaction:', error);
+          alert('Failed to send transaction: ' + error.message);
+        }
+      }
+      // Button event listeners
+      document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+      document.getElementById("sendTransactionBtn").addEventListener("click", sendTonTransaction);
    </script>
-
 </body>
 </html>

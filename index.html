@@ -16,19 +16,91 @@
             height: 100vh;
             max-width:100%;
         }
+        .category button {
+            padding: 5px 10px;
+            background-color: #333333;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .category button:hover {
+            background-color: rgba(51, 51, 51, 0.9);
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .content {
             padding: 20px;
             flex-grow: 1;
             margin-bottom: 50px; /* To prevent content overlap with the nav */
             overflow-x: hidden;
         }
+        .connect {
+            background: #0177ff;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 128, 0, 0.4);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .connect:hover {
+            background: #45a049;
+            box-shadow: 0 6px 8px rgba(0, 128, 0, 0.4);
+        }
+        .container {
+            width: 95%;
+            max-width: 400px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .dropdown {
+            background-color: #1e1e1e;
+            margin:0px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            max-width: 120px; /* Set a maximum width */
+            max-height: 20px;
+            border-radius: 10px; /* Optional: rounds corners */
+        }
+        .dropdown-content {
+            display: none; /* Hidden by default */
+            position: absolute;
+            background-color: rgba(30, 30, 30, 0.9); /* Semi-transparent background for dropdown */
+            min-width: 100px; /* Minimum width of dropdown */
+            z-index: 1; /* Ensure dropdown is above other content */
+        }
+        .dropdown:hover .dropdown-content {
+            display: block; /* Show dropdown on hover */
+        }
+        .dropdown-content a {
+            color: white; /* Text color for dropdown items */
+            padding: 12px 16px; /* Padding for dropdown items */
+            text-decoration: none; /* Remove underline */
+            display: block; /* Display as block for full width */
+        }
+        .dropdown-content a:hover {
+            background-color: rgba(51, 51, 51, 0.9); /* Darker on hover */
+        }
         header {
             display: flex;
             align-items: center; /* Center items vertically */
             justify-content: space-between; /* Space between title and icon */
             background-color: #1e1e1e; /* Grey header */
+            padding: 0px; /* Padding for the header */
+            height: 50px;
             width: 100%; /* Full width */
-            height: 100px;
             position: relative; /* Fixed position at top */
             z-index: 1000; /* Ensure it stays above other content */
         }
@@ -37,10 +109,6 @@
             font-size: 24px; /* Adjust font size as needed */
             text-align: center; /* Center text */
             flex-grow: 1; /* Allow title to take available space */
-        }
-        .search-icon {
-            font-size: 24px; /* Size of the search icon */
-            cursor: pointer; /* Pointer cursor on hover */
         }
         nav {
             display: flex;
@@ -66,13 +134,27 @@
         .page.active {
             display: block;
         }
-        .category {
+        .search-icon {
+            font-size: 24px; /* Size of the search icon */
+            cursor: pointer; /* Pointer cursor on hover */
+            margin: 10px; /* Margin around the icon */
+        }
+        /* New styles for tabs and task cards */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
             margin-bottom: 20px;
         }
-        .category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .tab {
+            padding: 10px 10px;
+            border-radius: 5px;
+            padding: 10px 10px;
+            background-color: #1e1e1e;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .tab.active {
+            background-color: #333333; /* Highlight active tab */
         }
         .videos {
             display: flex;
@@ -109,146 +191,15 @@
         .video button:hover {
             background-color: #444444;
         }
-        .category button {
-            padding: 5px 10px;
-            background-color: #333333;
-            border: none;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .category button:hover {
-            background-color: rgba(51, 51, 51, 0.9);
-        }
-        /* New styles for tabs and task cards */
-        .tabs {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        .tab {
-            padding: 10px 10px;
-            border-radius: 5px;
-            padding: 10px 10px;
-            background-color: #1e1e1e;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .tab.active {
-            background-color: #333333; /* Highlight active tab */
-        }
-        .dropdown {
-            background-color: #1e1e1e;
-            margin:0px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            max-width: 120px; /* Set a maximum width */
-            max-height: 20px;
-            border-radius: 10px; /* Optional: rounds corners */
-        }
-        .dropdown-content {
-            display: none; /* Hidden by default */
-            position: absolute;
-            background-color: rgba(30, 30, 30, 0.9); /* Semi-transparent background for dropdown */
-            min-width: 100px; /* Minimum width of dropdown */
-            z-index: 1; /* Ensure dropdown is above other content */
-        }
-        .dropdown:hover .dropdown-content {
-            display: block; /* Show dropdown on hover */
-        }
-        .dropdown-content a {
-            color: white; /* Text color for dropdown items */
-            padding: 12px 16px; /* Padding for dropdown items */
-            text-decoration: none; /* Remove underline */
-            display: block; /* Display as block for full width */
-        }
-        .dropdown-content a:hover {
-            background-color: rgba(51, 51, 51, 0.9); /* Darker on hover */
-        }
     </style>
-<script>
-    const videos = [
-        { title: "My Favorite Movie" },
-        { title: "Blockbuster Hit" },
-        { title: "Classic Film" },
-        { title: "Top Chart Buster" },
-        { title: "Must-Watch Series" },
-        { title: "Latest Release" }
-    ];
-
-    function searchVideos() {
-        const query = document.querySelector('#search input').value.toLowerCase();
-        const resultsContainer = document.querySelector('#search .videos');
-        
-        // Clear previous results
-        resultsContainer.innerHTML = '';
-
-        // Filter videos based on the query
-        const results = videos.filter(video => video.title.toLowerCase().includes(query));
-
-        // Display results
-        results.forEach(video => {
-            const videoElement = document.createElement('div');
-            videoElement.classList.add('video');
-            videoElement.innerHTML = `<p>${video.title}</p>`;
-            resultsContainer.appendChild(videoElement);
-        });
-    }
-
-    function navigateToSearch() {
-        window.location.href = 'search.html'; // Redirects to search.html
-    }
-
-    function showPage(page) {
-        const pages = document.querySelectorAll('.page');
-        pages.forEach(p => {
-            p.classList.remove('active'); // Hide all pages
-        });
-        document.getElementById(page).classList.add('active'); // Show selected page
-    }
-
-    function showTab(tab) {
-        const partnerTab = document.getElementById('partner');
-        const blockstreamTab = document.getElementById('blockstream');
-        const tabs = document.querySelectorAll('.tab');
-
-        if (tab === 'partner') {
-            partnerTab.style.display = 'block';
-            blockstreamTab.style.display = 'none';
-            tabs[0].classList.add('active');
-            tabs[1].classList.remove('active');
-        } else {
-            partnerTab.style.display = 'none';
-            blockstreamTab.style.display = 'block';
-            tabs[0].classList.remove('active');
-            tabs[1].classList.add('active');
-        }
-    }
-
-    function showLeaderboardTab(tab) {
-        const contents = document.querySelectorAll('.leaderboard-content');
-        contents.forEach(content => {
-            content.classList.remove('active'); // Hide all tabs
-        });
-        document.getElementById(tab).classList.add('active'); // Show selected tab
-
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(t => {
-            t.classList.remove('active'); // Remove active class from all tabs
-        });
-        const activeTab = Array.from(tabs).find(t => t.textContent.trim().toLowerCase() === tab);
-        if (activeTab) {
-            activeTab.classList.add('active'); // Set active class on selected tab
-        }
-    }
-</script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 </head>
-
 <header>
-<h1>Blockstream</h1>
 <span class="search-icon" onclick="navigateToSearch()">🔍</span> <!-- Search icon -->
+  <div class="wallet-section">
+    <div id="ton-connect"></div>
+  </div>
 </header>
-
 <body>
 <div class="content" id="content">
     <div id="home" class="page active">
@@ -406,21 +357,90 @@
             </div>
         </div>
     </div>
-    
-    <div id="about" class="page">
-        <h2>About</h2>
-        <p>Stay updated with the latest news and updates about our service.</p>
-    </div>
 </div>
 <footer>
 <nav>
     <a href="index.html" onclick="showPage('home')">Home</a>
     <a href="tasks.html" onclick ="showPage('tasks')">Tasks</a> <!-- Link to tasks.html -->
     <a href="leaderboard.html" onclick="showPage('leaderboard')">Leaderboard</a>
-    <a href="about.html" onclick="showPage('about')">About</a> 
+    <a href="account.html" onclick="showPage('account')">Account</a> 
 </nav>
 </footer>
 <script>
+        const videos = [
+        { title: "My Favorite Movie" },
+        { title: "Blockbuster Hit" },
+        { title: "Classic Film" },
+        { title: "Top Chart Buster" },
+        { title: "Must-Watch Series" },
+        { title: "Latest Release" }
+    ];
+
+    function searchVideos() {
+        const query = document.querySelector('#search input').value.toLowerCase();
+        const resultsContainer = document.querySelector('#search .videos');
+        
+        // Clear previous results
+        resultsContainer.innerHTML = '';
+
+        // Filter videos based on the query
+        const results = videos.filter(video => video.title.toLowerCase().includes(query));
+
+        // Display results
+        results.forEach(video => {
+            const videoElement = document.createElement('div');
+            videoElement.classList.add('video');
+            videoElement.innerHTML = `<p>${video.title}</p>`;
+            resultsContainer.appendChild(videoElement);
+        });
+    }
+
+    function navigateToSearch() {
+        window.location.href = 'search.html'; // Redirects to search.html
+    }
+
+    function showPage(page) {
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(p => {
+            p.classList.remove('active'); // Hide all pages
+        });
+        document.getElementById(page).classList.add('active'); // Show selected page
+    }
+
+    function showTab(tab) {
+        const partnerTab = document.getElementById('partner');
+        const blockstreamTab = document.getElementById('blockstream');
+        const tabs = document.querySelectorAll('.tab');
+
+        if (tab === 'partner') {
+            partnerTab.style.display = 'block';
+            blockstreamTab.style.display = 'none';
+            tabs[0].classList.add('active');
+            tabs[1].classList.remove('active');
+        } else {
+            partnerTab.style.display = 'none';
+            blockstreamTab.style.display = 'block';
+            tabs[0].classList.remove('active');
+            tabs[1].classList.add('active');
+        }
+    }
+
+    function showLeaderboardTab(tab) {
+        const contents = document.querySelectorAll('.leaderboard-content');
+        contents.forEach(content => {
+            content.classList.remove('active'); // Hide all tabs
+        });
+        document.getElementById(tab).classList.add('active'); // Show selected tab
+
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(t => {
+            t.classList.remove('active'); // Remove active class from all tabs
+        });
+        const activeTab = Array.from(tabs).find(t => t.textContent.trim().toLowerCase() === tab);
+        if (activeTab) {
+            activeTab.classList.add('active'); // Set active class on selected tab
+        }
+    }
     function navigateToSearch() { 
         window.location.href = "search.html"; // Redirects to search.html 
     }
@@ -449,6 +469,44 @@
         });
         document.getElementById(page).classList.add('active'); // Show selected page
     }
+          // Initialize TON Connect UI
+      const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://eldertree17.github.io/blockstreamv2/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect'
+      });
+  
+      // Function to connect wallet
+      async function connectWallet() {
+        try {
+          const wallet = await tonConnectUI.connect();
+          console.log('Wallet connected:', wallet);
+          alert('Wallet connected: ' + JSON.stringify(wallet));
+          // Update UI or perform actions after successful connection
+        } catch (error) {
+          console.error('Failed to connect wallet:', error);
+          alert('Failed to connect wallet: ' + error.message);
+        }
+      }
+  
+      // Function to send TON transaction
+      async function sendTonTransaction() {
+        try {
+          const transaction = await tonConnectUI.sendTransaction({
+            to: 'YOUR_TON_WALLET_ADDRESS',
+            value: '1', // Amount in TON
+            data: 'Hello, TON!'
+          });
+          console.log('Transaction sent:', transaction);
+          alert('Transaction sent: ' + JSON.stringify(transaction));
+        } catch (error) {
+          console.error('Failed to send transaction:', error);
+          alert('Failed to send transaction: ' + error.message);
+        }
+      }
+  
+      // Button event listeners
+      document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+      document.getElementById("sendTransactionBtn").addEventListener("click", sendTonTransaction);
 </script>
 </body>
 </html>
