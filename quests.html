@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blockstream</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Prevent body scrolling */
+}
+header {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Space between title and icon */
+    background-color: #1e1e1e; /* Grey header */
+    padding: 0px; /* Padding for the header */
+    height: 50px;
+    width: 100%; /* Full width */
+    position: relative; /* Fixed position at top */
+    z-index: 1000; /* Ensure it stays above other content */
+}
+h1 {
+    margin: 0; /* Remove default margin */
+    font-size: 24px; /* Adjust font size as needed */
+    text-align: center; /* Center text */
+    flex-grow: 1; /* Allow title to take available space */
+}
+.search-icon {
+    font-size: 24px; /* Size of the search icon */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin: 10px; /* Margin around the icon */
+}
+nav {
+    display: flex;
+    justify-content: center;
+    padding: 0px;
+    background-color: #1e1e1e;
+    position:absolute;
+    bottom: 0;
+    left: 0px;; /* Allows the dashboard to be all the way to the left */
+    width: 100%;
+}
+nav a {
+    color: #ffffff;
+    text-decoration: none; /* Remove underline from nav links */
+    padding: 15px 20px;
+    transition: background-color 0.3s;
+}
+nav a:hover {
+    background-color: #333333;
+}
+.page {
+    display: none;
+}
+.page.active {
+    display: block;
+}
+.content {
+    padding: 15px 15px;
+    flex-grow: 1;
+    margin: -5px 10px;
+    margin-bottom: 50px; /* To prevent content overlap with the nav */
+    overflow-y: auto; /* Allow scrolling in the content area */
+}
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+.tab {
+    padding: 5px 5px;
+    border-radius: 5px;
+    margin: 5px;
+    background-color: #1e1e1e;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+.tab.active {
+    background-color: #333333; /* Highlight active tab */
+}
+.quests-card {
+    display:flex;
+    align-items:center;
+    background-color: #1e1e1e;
+    padding: 10px;
+    margin: 10px 5px; /* First px is space between cards, second is align left/right */
+    margin-bottom: 10px;
+    border-radius: 5px;
+    max-width: 320px; /* Set a maximum width */
+    width: 100%; /* Allow it to be responsive */
+}
+.quests-details { 
+    flex-grow: 1; 
+}
+.quests-list {
+    display: flex;
+    flex-direction: column; /* Stack cards vertically */
+    align-items: right; /* Center cards horizontally */
+}
+.quests-logo {
+    width: 50px; 
+    height: 50px; 
+    margin-right: 20px; 
+}
+.quests-title { 
+    font-weight:bold; 
+    margin:0; 
+}
+.quests-points, .quests-completion { 
+    margin:5px 0; 
+}
+/* Bottom Sheet */
+.bottom-sheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: 0.1s linear;
+}
+.bottom-sheet.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.bottom-sheet .sheet-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+  background: #000;
+}
+.bottom-sheet .content {
+  width: 100%;
+  position: relative;
+  background: #fff;
+  max-height: 100vh;
+  height: 50vh;
+  padding: 25px 30px;
+  transform: translateY(100%);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+  transition: 0.3s ease;
+}
+.bottom-sheet.show .content{
+  transform: translateY(0%);
+}
+.bottom-sheet.dragging .content {
+  transition: none;
+}
+.bottom-sheet.fullscreen .content {
+  border-radius: 0;
+  overflow-y: hidden;
+}
+.bottom-sheet .header {
+  display: flex;
+  justify-content: center;
+}
+.header .drag-icon {
+  cursor: grab;
+  user-select: none;
+  padding: 15px;
+  margin-top: -15px;
+}
+.header .drag-icon span {
+  height: 4px;
+  width: 40px;
+  display: block;
+  background: #C7D0E1;
+  border-radius: 50px;
+}
+.bottom-sheet .body {
+  height: 100%;
+  overflow-y: auto;
+  padding: 15px 0 40px;
+  scrollbar-width: none;
+}
+.bottom-sheet .body::-webkit-scrollbar {
+  width: 0;
+}
+</style>
+</head>
+<body>
+    <header>
+        <span class="search-icon" onclick="navigateToSearch()">🔍</span> <!-- Search icon -->
+        <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+        <div class="wallet-section">
+            <div id="ton-connect"></div>
+    </header>
+<div class="content" id="content">
+    <div id="quests" class="page active">
+        <h2>Quests</h2>
+        <p>Enjoy free Telegram Stars by completings quests.</p>
+            <div class="tabs">
+                <div class="tab" onclick="showTab('all', 'parter', 'blockstream')">
+                All Quests (4)
+                </div>
+                <div class="tab" onclick="showTab('partner')">
+                Partner Quests (1)
+                </div>
+                <div class="tab" onclick="showTab('blockstream')">
+                Blockstream Quests (3)
+            </div>
+         </div>
+         
+         <div class="bottom-sheet">
+            <div class="sheet-overlay"></div>
+            <div class="content">
+              <div class="header">
+                <div class="drag-icon"><span></span></div>
+              </div>
+              <div class="body">
+                <h2>Moda Title</h2>
+                <p>Modal Content</p>
+              </div>
+            </div>
+          </div>
+          <button class="show-modal">Launch The Modal</button>
+
+         <div id="all" class="quests-list" style="display: block;">
+            <!-- All Quests will be shown here -->
+        </div>
+        <div id="partner" class="quests-list" style="display: block;">
+            <div class="quests-card">
+                <img src="logo4.png" alt="quests Logo" class="quests-logo">
+                <div class="quests-details">
+                    <p class="quests-title">Partner Quests 1</p>
+                    <p class="quests-points">{num} Stars</p>
+                    <p class="quests-completion">Completed: 1/1</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <p id="open-bottom-sheet">Tap to open</p>
+        </div>
+        <div class="bottom-sheet" id="bottom-sheet">
+            <div class="grabber"></div>
+            <div class="sheet-content">
+                <h2>Bottom Sheet Modal</h2>
+                <p>
+                    This is a bottom sheet modal. You can use it to display additional information or actions.
+                </p>
+            </div>
+        </div>
+        <div id="blockstream" class="quests-list" style="display: block;">
+        <div class="quests-card">
+        <img src="logo4.png" alt="quests Logo" class="quests-logo">
+        <div class="quests-details">
+            <p class="quests-title">Quests A Title</p>
+            <p class="quests-points">{num} Stars</p>
+            <p class="quests-completion">Completed: 1/1</p>
+        </div>
+    </div>
+        <div class="quests-card">
+            <img src="logo5.png" alt="quests Logo" class="quests-logo">
+            <div class="quests-details">
+                <p class="quests-title">Quests B Title</p>
+                <p class="quests-points">{num} Stars</p>
+                <p class="quests-completion">Completed: 2/2</p>
+            </div>
+        </div>
+        <div class="quests-card">
+            <img src="logo6.png" alt="quests Logo" class="quests-logo">
+            <div class="quests-details">
+                <p class="quests-title">Quests C Title</p>
+                <p class="quests-points">{num} Stars</p>
+                <p class="quests-completion">Completed: 0/1</p>
+            </div>
+        </div>
+    
+        
+        <!-- Add more questss as needed -->
+    </div>
+    <div>
+    <footer>
+    <nav>
+        <a href="index.html" onclick="showPage('home')">Home</a>
+        <a href="quests.html" onclick ="showPage('quests')">Quests</a> <!-- Link to quests.html -->
+        <a href="leaderboard.html" onclick="showPage('leaderboard')">Leaderboard</a>
+        <a href="account.html" onclick="showPage('account')">Account</a> 
+    </nav>
+    </footer>
+    </div>
+    <script>
+    
+    function navigateToSearch() {
+            window.location.href = 'search.html'; // Redirects to search.html
+        }
+    // Function to switch between tabs
+    function showTab(tab) {
+    const allTab = document.getElementById('all');
+    const partnerTab = document.getElementById('partner');
+    const blockstreamTab = document.getElementById('blockstream');
+
+    // Reset all tabs to hidden by default
+    partnerTab.style.display = 'none';
+    blockstreamTab.style.display = 'none';
+
+    // Remove the `active` class from all tabs
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+    if (tab === 'all') {
+        // Show both Partner and Blockstream questss
+        partnerTab.style.display = 'block';
+        blockstreamTab.style.display = 'block';
+
+        // Activate the All tab
+        document.querySelector('.tab:nth-child(1)').classList.add('active'); // All tab is the 1st child
+    } else if (tab === 'partner') {
+        // Show only Partner questss
+        partnerTab.style.display = 'block';
+
+        // Activate the Partner tab
+        document.querySelector('.tab:nth-child(2)').classList.add('active'); // Partner tab is the 2nd child
+    } else if (tab === 'blockstream') {
+        // Show only Blockstream questss
+        blockstreamTab.style.display = 'block';
+
+        // Activate the Blockstream tab
+        document.querySelector('.tab:nth-child(3)').classList.add('active'); // Blockstream tab is the 3rd child
+    }
+}
+              // Initialize TON Connect UI
+              const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://eldertree17.github.io/blockstreamv2/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect'
+      });
+  
+      // Function to connect wallet
+      async function connectWallet() {
+        try {
+          const wallet = await tonConnectUI.connect();
+          console.log('Wallet connected:', wallet);
+          alert('Wallet connected: ' + JSON.stringify(wallet));
+          // Update UI or perform actions after successful connection
+        } catch (error) {
+          console.error('Failed to connect wallet:', error);
+          alert('Failed to connect wallet: ' + error.message);
+        }
+      }
+  
+      // Function to send TON transaction
+      async function sendTonTransaction() {
+        try {
+          const transaction = await tonConnectUI.sendTransaction({
+            to: 'YOUR_TON_WALLET_ADDRESS',
+            value: '1', // Amount in TON
+            data: 'Hello, TON!'
+          });
+          console.log('Transaction sent:', transaction);
+          alert('Transaction sent: ' + JSON.stringify(transaction));
+        } catch (error) {
+          console.error('Failed to send transaction:', error);
+          alert('Failed to send transaction: ' + error.message);
+        }
+      }
+  
+    // Button event listeners
+    document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+    document.getElementById("sendTransactionBtn").addEventListener("click", sendTonTransaction);
+
+    //Bottom Sheet
+    const showModalBtn = document.querySelector(".show-modal");
+    const bottomSheet = document.querySelector(".bottom-sheet");
+    const sheetOverlay = bottomSheet.querySelector(".sheet-overlay");
+    const sheetContent = bottomSheet.querySelector(".content");
+    const dragIcon = bottomSheet.querySelector(".drag-icon");
+    let isDragging = false, startY, startHeight;
+    const showBottomSheet = () => {
+        bottomSheet.classList.add("show");
+        document.body.style.overflowY = "hidden";
+        updateSheetHeight(50);
+     }
+    const updateSheetHeight = (height) => {
+        sheetContent.style.height = `${height}vh`;
+        bottomSheet.classList.toggle("fullscreen", height === 100);
+    }
+    const hideBottomSheet = () => {
+        bottomSheet.classList.remove("show");
+        document.body.style.overflowY = "auto";
+    }
+    const dragStart = (e) => {
+        isDragging = true;
+        startY = e.pageY || e.touches?.[0].pageY;
+        startHeight = parseInt(sheetContent.style.height);
+        bottomSheet.classList.add("dragging");
+    }
+    const dragging = (e) => {
+        if(!isDragging) return;
+        const delta = startY - (e.pageY || e.touches?.[0].pageY);
+        const newHeight = startHeight + delta / window.innerHeight * 100;
+        updateSheetHeight(newHeight);
+    }
+    const dragStop = () => {
+        isDragging = false;
+        bottomSheet.classList.remove("dragging");
+        const sheetHeight = parseInt(sheetContent.style.height);
+    sheetHeight < 25 ? hideBottomSheet() : sheetHeight > 75 ? updateSheetHeight(100) : updateSheetHeight(50);
+    }
+    dragIcon.addEventListener("mousedown", dragStart);
+    document.addEventListener("mousemove", dragging);
+    document.addEventListener("mouseup", dragStop);
+    dragIcon.addEventListener("touchstart", dragStart);
+    document.addEventListener("touchmove", dragging);
+    document.addEventListener("touchend", dragStop);
+    sheetOverlay.addEventListener("click", hideBottomSheet);
+    showModalBtn.addEventListener("click", showBottomSheet);
+    </script>
+    
+    </body>
+    </html>
+    
